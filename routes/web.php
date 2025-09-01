@@ -7,8 +7,9 @@ use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\Admin\CollectionController;
 
 Route::get('/', [WebsiteController::class, 'home'])->name('home');
-
-
+Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');
+Route::get('/collections', [WebsiteController::class, 'collections'])->name('collections');
+Route::get('/collection/{id}', [WebsiteController::class, 'collection'])->name('collection.detail');
 
 // داشبورد فقط برای کاربران لاگین‌کرده
 Route::get('/dashboard', function () {
@@ -23,13 +24,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // مسیرهای پنل مدیریت (فقط با لاگین)
-//Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-  //  Route::resource('collections', CollectionController::class);
-    //Route::resource('gallery', GalleryController::class);
-//});
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('collections', AdminCollectionController::class);
-    Route::resource('gallery',     AdminGalleryController::class)->only(['index','create','store','destroy']);
+    Route::resource('collections', CollectionController::class);
+    Route::resource('gallery', GalleryController::class)->only(['index','create','store','destroy']);
 });
+
 // فایل احراز هویت Breeze
 require __DIR__.'/auth.php';

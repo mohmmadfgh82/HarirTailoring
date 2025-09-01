@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CollectionController extends Controller
 {
     public function index()
     {
-        $collections = Collection::latest()->get();
+        $collections = Collection::latest()->paginate(12);
         return view('admin.collections.index', compact('collections'));
     }
 
@@ -38,7 +39,7 @@ class CollectionController extends Controller
         'image' => $path ? '/storage/' . $path : null,
     ]);
 
-    return redirect()->route('admin.collections.index')->with('success', 'کالکشن جدید اضافه شد');
+    return redirect()->route('admin.collections.index')->with('success', 'کالکشن جدید با موفقیت اضافه شد');
 }
 
     public function edit($id)
@@ -74,12 +75,20 @@ class CollectionController extends Controller
     $collection->description = $request->description;
     $collection->save();
 
-    return redirect()->route('admin.collections.index')->with('success', 'کالکشن ویرایش شد');
+    return redirect()->route('admin.collections.index')->with('success', 'کالکشن با موفقیت ویرایش شد');
 }
 
     public function destroy($id)
     {
-        Collection::destroy($id);
-        return redirect()->route('admin.collections.index')->with('success', 'کالکشن حذف شد');
+        $collection = Collection::findOrFail($id);
+        
+        // حذف تصویر از storage در صورت وجود
+        if ($collection->image) {
+            $imagePath = str_replace('/storage/', '', $collection->image);
+            \Storage::disk('public')->delete($imagePath);
+        }
+        
+        $collection->delete();
+        return redirect()->route('admin.collections.index')->with('success', 'کالکشن با موفقیت حذف شد');
     }
 }

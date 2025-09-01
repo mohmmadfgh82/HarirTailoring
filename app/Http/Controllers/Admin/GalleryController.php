@@ -10,7 +10,7 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::latest()->get();
+        $galleries = Gallery::latest()->paginate(20);
         return view('admin.gallery.index', compact('galleries'));
     }
 
@@ -38,11 +38,13 @@ class GalleryController extends Controller
 
     public function destroy(Gallery $gallery)
     {
-        if ($gallery->image && file_exists(public_path($gallery->image))) {
-            unlink(public_path($gallery->image));
+        // حذف فایل از storage
+        if ($gallery->image) {
+            $imagePath = str_replace('/storage/', '', $gallery->image);
+            \Storage::disk('public')->delete($imagePath);
         }
 
         $gallery->delete();
-        return back()->with('success', 'تصویر حذف شد.');
+        return back()->with('success', 'تصویر با موفقیت حذف شد.');
     }
 }
