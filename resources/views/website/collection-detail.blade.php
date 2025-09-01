@@ -89,10 +89,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-form">
-                        <form action="#" method="POST">
+                        <form action="{{ route('contact.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="collection_id" value="{{ $collection->id }}">
                             <input type="hidden" name="collection_title" value="{{ $collection->title }}">
+                            <input type="hidden" name="subject" value="سفارش کالکشن">
                             
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
