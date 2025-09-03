@@ -12,7 +12,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/dashboard';
 
     /**
      * Bootstrap any application services.
@@ -22,16 +22,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             // مسیرهای API
             Route::middleware('api')
-            ->prefix('api')
-            ->group(function () {
-                require base_path('routes/api.php');
-                dd('API routes loaded!');
-            });
-        
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
 
             // مسیرهای Web
             Route::middleware('web')
-             ->group(base_path('routes/web.php'));
+                ->group(base_path('routes/web.php'));
         });
     }
 }
