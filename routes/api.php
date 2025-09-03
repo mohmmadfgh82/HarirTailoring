@@ -17,12 +17,23 @@ Route::get('/test', fn () => response()->json(['message' => 'API is working!']))
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// Public contact form (no auth required)
+Route::post('/contact', [App\Http\Controllers\Api\ContactMessageController::class, 'store']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/gallery', [GalleryApiController::class, 'index']);
     Route::post('/gallery', [GalleryApiController::class, 'store']);
     Route::delete('/gallery/{id}', [GalleryApiController::class, 'destroy']);
+
+    // Contact Messages Management
+    Route::get('/contact-messages', [App\Http\Controllers\Api\ContactMessageController::class, 'index']);
+    Route::get('/contact-messages/{id}', [App\Http\Controllers\Api\ContactMessageController::class, 'show']);
+    Route::put('/contact-messages/{id}', [App\Http\Controllers\Api\ContactMessageController::class, 'update']);
+    Route::delete('/contact-messages/{id}', [App\Http\Controllers\Api\ContactMessageController::class, 'destroy']);
+    Route::post('/contact-messages/bulk-action', [App\Http\Controllers\Api\ContactMessageController::class, 'bulkAction']);
+    Route::get('/contact-messages-stats', [App\Http\Controllers\Api\ContactMessageController::class, 'stats']);
 
     // Products
     Route::apiResource('/products', ProductController::class);

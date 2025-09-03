@@ -106,6 +106,17 @@
                         </span>
                     @endif
                 </a>
+                <a class="nav-link position-relative" href="{{ route('admin.contact-messages.index') }}">
+                    <i class="fas fa-envelope me-1"></i>پیام‌ها
+                    @php
+                        $newMessagesCount = \App\Models\ContactMessage::where('status', 'new')->count();
+                    @endphp
+                    @if($newMessagesCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                            {{ $newMessagesCount }}
+                        </span>
+                    @endif
+                </a>
             </div>
         </div>
     </nav>

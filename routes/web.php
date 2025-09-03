@@ -14,6 +14,9 @@ Route::get('/collection/{id}', [WebsiteController::class, 'collection'])->name('
 // Contact form submission
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
+// Contact form submission
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+
 // داشبورد فقط برای کاربران لاگین‌کرده
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -30,6 +33,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('collections', CollectionController::class);
     Route::resource('gallery', GalleryController::class)->only(['index','create','store','destroy']);
+    
+    // Contact Messages
+    Route::get('contact-messages', [App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::get('contact-messages/{id}', [App\Http\Controllers\Admin\ContactMessageController::class, 'show'])->name('contact-messages.show');
+    Route::patch('contact-messages/{id}/status', [App\Http\Controllers\Admin\ContactMessageController::class, 'updateStatus'])->name('contact-messages.update-status');
+    Route::delete('contact-messages/{id}', [App\Http\Controllers\Admin\ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+    Route::post('contact-messages/bulk-action', [App\Http\Controllers\Admin\ContactMessageController::class, 'bulkAction'])->name('contact-messages.bulk-action');
     
     // Contact Messages
     Route::get('contact-messages', [App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('contact-messages.index');
