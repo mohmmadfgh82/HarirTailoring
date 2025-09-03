@@ -18,14 +18,14 @@ class GalleryApiController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string|max:255',
-            'image' => 'required|image',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $path = $request->file('image')->store('gallery', 'public');
 
         $gallery = Gallery::create([
             'title' => $request->title,
-            'image' => url('/storage/' . $path),
+            'image' => asset('storage/' . $path),
         ]);
 
         return response()->json($gallery, 201);
@@ -36,9 +36,9 @@ class GalleryApiController extends Controller
         $gallery = Gallery::findOrFail($id);
 
         // حذف فایل از storage
-        $imagePath = str_replace(url('/'), '', $gallery->image); // حذف URL
-        if (file_exists(public_path($imagePath))) {
-            unlink(public_path($imagePath));
+        if ($gallery->image) {
+            $imagePath = str_replace([asset('storage/'), '/storage/'], '', $gallery->image);
+            Storage::disk('public')->delete($imagePath);
         }
 
         $gallery->delete();

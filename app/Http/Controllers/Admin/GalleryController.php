@@ -23,14 +23,14 @@ class GalleryController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string|max:255',
-            'image' => 'required|image',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $path = $request->file('image')->store('gallery', 'public');
 
         Gallery::create([
             'title' => $request->title,
-            'image' => '/storage/' . $path,
+            'image' => asset('storage/' . $path),
         ]);
 
         return redirect()->route('admin.gallery.index')->with('success', 'تصویر با موفقیت اضافه شد.');
