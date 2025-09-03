@@ -19,25 +19,25 @@
         <div class="container">
             @if($galleries->isNotEmpty())
                 <div class="row g-4">
-                    @foreach($galleries as $index => $image)
+                    @foreach($galleries as $index => $gallery)
                         <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ ($index % 12) * 50 }}">
                             <div class="gallery-item">
-                                <img src="{{ $image->image }}" alt="{{ $image->title ?? 'گالری حریر' }}" 
-                                     data-bs-toggle="modal" data-bs-target="#galleryModal{{ $image->id }}" 
+                                <img src="{{ $gallery->image }}" alt="{{ $gallery->title ?? 'گالری حریر' }}" 
+                                     data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}" 
                                      style="cursor: pointer;">
                             </div>
                         </div>
 
                         {{-- Modal for each image --}}
-                        <div class="modal fade" id="galleryModal{{ $image->id }}" tabindex="-1">
+                        <div class="modal fade" id="galleryModal{{ $gallery->id }}" tabindex="-1">
                             <div class="modal-dialog modal-xl modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">{{ $image->title ?? 'گالری حریر' }}</h5>
+                                        <h5 class="modal-title">{{ $gallery->title ?? 'گالری حریر' }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body p-0">
-                                        <img src="{{ $image->image }}" class="img-fluid w-100" alt="{{ $image->title }}">
+                                        <img src="{{ $gallery->image }}" class="img-fluid w-100" alt="{{ $gallery->title }}">
                                     </div>
                                 </div>
                             </div>

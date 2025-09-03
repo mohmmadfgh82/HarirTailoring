@@ -101,9 +101,9 @@
                                                 <h3 class="card-title text-center mb-3">{{ $collection->title }}</h3>
                                                 <p class="card-text text-center">{{ $collection->description }}</p>
                                                 <div class="text-center">
-                                                    <button class="btn btn-elegant">
+                                                    <a href="{{ route('collection.detail', $collection->id) }}" class="btn btn-elegant">
                                                         <i class="fas fa-info-circle me-2"></i>جزئیات بیشتر
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -141,25 +141,25 @@
             
             @if($galleries->isNotEmpty())
                 <div class="row g-4">
-                    @foreach($galleries->take(12) as $index => $image)
+                    @foreach($galleries->take(12) as $index => $gallery)
                         <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ $index * 100 }}">
                             <div class="gallery-item">
-                                <img src="{{ $image->image }}" alt="{{ $image->title ?? 'گالری حریر' }}" 
-                                     data-bs-toggle="modal" data-bs-target="#galleryModal{{ $image->id }}" 
+                                <img src="{{ $gallery->image }}" alt="{{ $gallery->title ?? 'گالری حریر' }}" 
+                                     data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}" 
                                      style="cursor: pointer;">
                             </div>
                         </div>
 
                         {{-- Modal for each image --}}
-                        <div class="modal fade" id="galleryModal{{ $image->id }}" tabindex="-1">
+                        <div class="modal fade" id="galleryModal{{ $gallery->id }}" tabindex="-1">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">{{ $image->title ?? 'گالری حریر' }}</h5>
+                                        <h5 class="modal-title">{{ $gallery->title ?? 'گالری حریر' }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body p-0">
-                                        <img src="{{ $image->image }}" class="img-fluid w-100" alt="{{ $image->title }}">
+                                        <img src="{{ $gallery->image }}" class="img-fluid w-100" alt="{{ $gallery->title }}">
                                     </div>
                                 </div>
                             </div>
@@ -169,9 +169,9 @@
                 
                 @if($galleries->count() > 12)
                     <div class="text-center mt-4">
-                        <button class="btn btn-elegant" onclick="loadMoreGallery()">
+                        <a href="{{ route('gallery') }}" class="btn btn-elegant">
                             <i class="fas fa-plus me-2"></i>مشاهده بیشتر
-                        </button>
+                        </a>
                     </div>
                 @endif
             @else
@@ -223,20 +223,6 @@
         </div>
     </section>
 
-    {{-- Map Section --}}
-    <section class="py-5 bg-light" id="map-section">
-        <div class="container">
-            <h2 class="section-title text-center">موقعیت ما</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="map-container" data-aos="fade-up">
-                        <div id="map" style="height: 400px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- Contact Section --}}
     <section class="contact-section" id="contact">
         <div class="container" data-aos="fade-up">
@@ -244,6 +230,13 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-form">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show">
+                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
+
                         <form action="{{ route('contact.store') }}" method="POST">
                             @csrf
                             <div class="row">
@@ -251,38 +244,53 @@
                                     <label for="name" class="form-label">
                                         <i class="fas fa-user me-2"></i>نام و نام خانوادگی
                                     </label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="نام شما" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="نام شما" required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">
                                         <i class="fas fa-phone me-2"></i>شماره تماس
                                     </label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="09123456789">
+                                    <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="09123456789" required>
+                                    @error('phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">
                                     <i class="fas fa-envelope me-2"></i>ایمیل (اختیاری)
                                 </label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="email@example.com">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="subject" class="form-label">
                                     <i class="fas fa-tag me-2"></i>موضوع
                                 </label>
-                                <select class="form-control" id="subject" name="subject" required>
+                                <select class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" required>
                                     <option value="">انتخاب کنید...</option>
-                                    <option value="consultation">مشاوره طراحی</option>
-                                    <option value="order">سفارش جدید</option>
-                                    <option value="pricing">استعلام قیمت</option>
-                                    <option value="other">سایر موارد</option>
+                                    <option value="consultation" {{ old('subject') == 'consultation' ? 'selected' : '' }}>مشاوره طراحی</option>
+                                    <option value="order" {{ old('subject') == 'order' ? 'selected' : '' }}>سفارش جدید</option>
+                                    <option value="pricing" {{ old('subject') == 'pricing' ? 'selected' : '' }}>استعلام قیمت</option>
+                                    <option value="other" {{ old('subject') == 'other' ? 'selected' : '' }}>سایر موارد</option>
                                 </select>
+                                @error('subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-4">
                                 <label for="message" class="form-label">
                                     <i class="fas fa-comment me-2"></i>پیام شما
                                 </label>
-                                <textarea class="form-control" id="message" name="message" rows="5" placeholder="لطفاً پیام خود را بنویسید..." required></textarea>
+                                <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="5" placeholder="لطفاً پیام خود را بنویسید..." required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-elegant btn-lg">
@@ -295,34 +303,5 @@
             </div>
         </div>
     </section>
-
-    {{-- Leaflet Scripts --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        // Initialize map
-        var map = L.map('map').setView([34.075639, 49.7255], 16);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Custom marker icon
-        var customIcon = L.divIcon({
-            html: '<i class="fas fa-map-marker-alt fa-2x" style="color: #DAA520;"></i>',
-            iconSize: [30, 30],
-            className: 'custom-div-icon'
-        });
-
-        L.marker([34.075639, 49.7255], {icon: customIcon}).addTo(map)
-            .bindPopup('<div class="text-center"><strong>مزون حریر</strong><br>کوی صنعتی، منطقه 3، بلوک33، واحد 9<br><small>تلفن: 0912-345-6789</small></div>')
-            .openPopup();
-
-        // Load more gallery function
-        function loadMoreGallery() {
-            // This would typically load more images via AJAX
-            alert('قابلیت بارگذاری تصاویر بیشتر به زودی اضافه خواهد شد');
-        }
-    </script>
 
 @endsection

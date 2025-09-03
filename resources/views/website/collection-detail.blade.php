@@ -89,6 +89,13 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-form">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show">
+                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
+
                         <form action="{{ route('contact.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="collection_id" value="{{ $collection->id }}">
@@ -105,35 +112,47 @@
                                     <label for="name" class="form-label">
                                         <i class="fas fa-user me-2"></i>نام و نام خانوادگی
                                     </label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="نام شما" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="نام شما" required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">
                                         <i class="fas fa-phone me-2"></i>شماره تماس
                                     </label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="09123456789" required>
+                                    <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="09123456789" required>
+                                    @error('phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="size" class="form-label">
                                     <i class="fas fa-ruler me-2"></i>سایز مورد نظر
                                 </label>
-                                <select class="form-control" id="size" name="size" required>
+                                <select class="form-control @error('size') is-invalid @enderror" id="size" name="size" required>
                                     <option value="">انتخاب کنید...</option>
-                                    <option value="XS">XS</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                    <option value="XXL">XXL</option>
-                                    <option value="custom">سایز سفارشی</option>
+                                    <option value="XS" {{ old('size') == 'XS' ? 'selected' : '' }}>XS</option>
+                                    <option value="S" {{ old('size') == 'S' ? 'selected' : '' }}>S</option>
+                                    <option value="M" {{ old('size') == 'M' ? 'selected' : '' }}>M</option>
+                                    <option value="L" {{ old('size') == 'L' ? 'selected' : '' }}>L</option>
+                                    <option value="XL" {{ old('size') == 'XL' ? 'selected' : '' }}>XL</option>
+                                    <option value="XXL" {{ old('size') == 'XXL' ? 'selected' : '' }}>XXL</option>
+                                    <option value="custom" {{ old('size') == 'custom' ? 'selected' : '' }}>سایز سفارشی</option>
                                 </select>
+                                @error('size')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-4">
                                 <label for="message" class="form-label">
                                     <i class="fas fa-comment me-2"></i>توضیحات اضافی
                                 </label>
-                                <textarea class="form-control" id="message" name="message" rows="4" placeholder="توضیحات خاص، تغییرات مورد نظر، زمان تحویل و..."></textarea>
+                                <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="4" placeholder="توضیحات خاص، تغییرات مورد نظر، زمان تحویل و...">{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-elegant btn-lg">
